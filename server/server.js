@@ -7,16 +7,25 @@ const ACTIONS = require('./src/Actions');
 const app = express();
 const server = http.createServer(app);
 
+const allowedOrigins = [
+  "http://localhost:3000",                     // for local React dev
+  "https://realtime-code-editor-chat.vercel.app", // final Vercel prod domain
+];
+
 // Allow frontend from Vercel to talk to this backend
 const io = new Server(server, {
   cors: {
-    origin: 'https://realtime-code-editor-chat.vercel.app', // ✅ Your Vercel domain
-    methods: ['GET', 'POST'],
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST"],
+  credentials: true,
+}));
 
 const userSocketMap = {};
 
